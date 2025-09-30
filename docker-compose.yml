@@ -19,7 +19,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     ports:
-      - "8000:5000"
+      - "8000:8000"
     volumes:
       - ./backend:/app
       - /app/node_modules

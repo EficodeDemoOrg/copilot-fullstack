@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { taskService } from '../services/api';
 import { TaskStatus, Task } from '../types';
 import TaskList from '../components/TaskList';
@@ -15,24 +15,20 @@ const TasksPage: React.FC = () => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // Fetch all tasks for stats (unfiltered)
-  const { data: allTasks = [] } = useQuery(
-    ['allTasks'],
-    () => taskService.getTasks(),
-    {
-      refetchOnMount: true,
-    }
-  );
+  const { data: allTasks = [] } = useQuery({
+    queryKey: ['allTasks'],
+    queryFn: () => taskService.getTasks(),
+    refetchOnMount: true,
+  });
 
   // Fetch filtered tasks for the task list
-  const { data: tasks = [], isLoading, error } = useQuery(
-    ['tasks', { status: statusFilter || undefined }],
-    () => taskService.getTasks({ 
+  const { data: tasks = [], isLoading, error } = useQuery({
+    queryKey: ['tasks', { status: statusFilter || undefined }],
+    queryFn: () => taskService.getTasks({ 
       status: statusFilter || undefined
     }),
-    {
-      refetchOnMount: true,
-    }
-  );
+    refetchOnMount: true,
+  });
 
   const handleEditTask = (task: Task) => {
     setEditingTask(task);

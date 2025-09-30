@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Task } from '../types';
 import { taskService } from '../services/api';
 import { MessageCircle, Edit, Trash2 } from 'lucide-react';
@@ -15,9 +15,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEditClick }) => {
   const [showComments, setShowComments] = useState(false);
   const queryClient = useQueryClient();
 
-  const deleteMutation = useMutation(taskService.deleteTask, {
+  const deleteMutation = useMutation({
+    mutationFn: taskService.deleteTask,
     onSuccess: () => {
-      queryClient.invalidateQueries(['tasks']);
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('Task deleted successfully');
     },
     onError: () => {
@@ -25,13 +26,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEditClick }) => {
     },
   });
 
-  const statusMutation = useMutation(
-    ({ id, status }: { id: string; status: Task['status'] }) =>
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: Task['status'] }) =>
       taskService.updateTask(id, { status }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['tasks']);
-        toast.success('Task status updated');
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success('Task status updated');
       },
       onError: () => {
         toast.error('Failed to update task status');
@@ -77,7 +77,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEditClick }) => {
           <button
             className="btn btn-danger"
             onClick={handleDelete}
-            disabled={deleteMutation.isLoading}
+            disabled={deleteMutation.isPending}
             title="Delete task"
           >
             <Trash2 size={16} />
@@ -90,7 +90,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEditClick }) => {
           value={task.status}
           onChange={(e) => handleStatusChange(e.target.value as Task['status'])}
           className="form-select"
-          disabled={statusMutation.isLoading}
+          disabled={statusMutation.isPending}
         >
           <option value="To Do">To Do</option>
           <option value="In Progress">In Progress</option>

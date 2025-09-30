@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { commentService } from '../services/api';
 import { Comment, CreateCommentData } from '../types';
@@ -30,20 +30,20 @@ const CommentsModal: React.FC<CommentsModalProps> = ({
   } = useForm<CreateCommentData>();
 
   // Fetch comments for the task
-  const { data: comments = [], isLoading } = useQuery(
-    ['comments', taskId],
-    () => commentService.getComments(taskId),
-    { enabled: isOpen }
-  );
+  const { data: comments = [], isLoading } = useQuery({
+    queryKey: ['comments', taskId],
+    queryFn: () => commentService.getComments(taskId),
+    enabled: isOpen,
+  });
 
-  // Create comment mutation
-  const createMutation = useMutation(commentService.createComment, {
+    // Create comment mutation
+  const createMutation = useMutation({
+    mutationFn: (data: CreateCommentData) => commentService.createComment(taskId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments', taskId]);
-      queryClient.invalidateQueries(['tasks']);
+      queryClient.invalidateQueries({ queryKey: ['comments', taskId] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('Comment added successfully');
       reset();
-      setShowAddForm(false);
     },
     onError: (error: any) => {
       const message = error.response?.data?.error || 'Failed to add comment';
@@ -52,10 +52,11 @@ const CommentsModal: React.FC<CommentsModalProps> = ({
   });
 
   // Delete comment mutation
-  const deleteMutation = useMutation(commentService.deleteComment, {
+  const deleteMutation = useMutation({
+    mutationFn: commentService.deleteComment,
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments', taskId]);
-      queryClient.invalidateQueries(['tasks']);
+      queryClient.invalidateQueries({ queryKey: ['comments', taskId] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('Comment deleted successfully');
     },
     onError: (error: any) => {
@@ -65,7 +66,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({
   });
 
   const onSubmit = (data: CreateCommentData) => {
-    createMutation.mutate(taskId, data);
+    createMutation.mutate(data);
   };
 
   const handleDeleteComment = (commentId: string) => {
@@ -182,9 +183,9 @@ const CommentsModal: React.FC<CommentsModalProps> = ({
                     <button 
                       type="submit" 
                       className="btn btn-primary"
-                      disabled={createMutation.isLoading}
+                      disabled={createMutation.isPending}
                     >
-                      {createMutation.isLoading ? 'Adding...' : 'Add Comment'}
+                      {createMutation.isPending ? 'Adding...' : 'Add Comment'}
                     </button>
                   </div>
                 </form>

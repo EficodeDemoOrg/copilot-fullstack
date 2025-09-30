@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { tagService } from '../services/api';
 import { CreateTagData } from '../types';
@@ -26,9 +26,10 @@ const CreateTagModal: React.FC<CreateTagModalProps> = ({ isOpen, onClose }) => {
     }
   });
 
-  const createMutation = useMutation(tagService.createTag, {
+  const createMutation = useMutation({
+    mutationFn: tagService.createTag,
     onSuccess: () => {
-      queryClient.invalidateQueries(['tags']);
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
       toast.success('Tag created successfully');
       reset();
       setSelectedColor('#007bff');
@@ -133,9 +134,9 @@ const CreateTagModal: React.FC<CreateTagModalProps> = ({ isOpen, onClose }) => {
             <button 
               type="submit" 
               className="btn btn-primary"
-              disabled={createMutation.isLoading}
+              disabled={createMutation.isPending}
             >
-              {createMutation.isLoading ? 'Creating...' : 'Create Tag'}
+              {createMutation.isPending ? 'Creating...' : 'Create Tag'}
             </button>
           </div>
         </form>

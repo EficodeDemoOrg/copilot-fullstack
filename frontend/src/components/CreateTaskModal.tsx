@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient, useQuery } from 'react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { taskService, tagService } from '../services/api';
 import { CreateTaskData } from '../types';
@@ -15,7 +15,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isOpen, onClose }) =>
   const queryClient = useQueryClient();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const { data: tags = [] } = useQuery('tags', tagService.getTags);
+  const { data: tags = [] } = useQuery({
+    queryKey: ['tags'],
+    queryFn: tagService.getTags,
+  });
 
   const {
     register,
@@ -24,9 +27,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isOpen, onClose }) =>
     formState: { errors }
   } = useForm<CreateTaskData>();
 
-  const createMutation = useMutation(taskService.createTask, {
+  const createMutation = useMutation({
+    mutationFn: taskService.createTask,
     onSuccess: () => {
-      queryClient.invalidateQueries(['tasks']);
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('Task created successfully');
       reset();
       setSelectedTags([]);
@@ -144,9 +148,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isOpen, onClose }) =>
             <button 
               type="submit" 
               className="btn btn-primary"
-              disabled={createMutation.isLoading}
+              disabled={createMutation.isPending}
             >
-              {createMutation.isLoading ? 'Creating...' : 'Create Task'}
+              {createMutation.isPending ? 'Creating...' : 'Create Task'}
             </button>
           </div>
         </form>

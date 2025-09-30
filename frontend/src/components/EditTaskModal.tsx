@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { taskService, tagService, commentService } from '../services/api';
 import { Task, UpdateTaskData, Tag, Comment, CreateCommentData } from '../types';
@@ -41,54 +41,54 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ isOpen, onClose, task }) 
   } = useForm<CreateCommentData>();
 
   // Fetch available tags
-  const { data: availableTags = [] } = useQuery(['tags'], tagService.getTags);
+  const { data: availableTags = [] } = useQuery({
+    queryKey: ['tags'],
+    queryFn: tagService.getTags,
+  });
   
   // Fetch comments for this task
-  const { data: comments = [], isLoading: commentsLoading } = useQuery(
-    ['comments', task.id],
-    () => commentService.getComments(task.id),
-    { enabled: isOpen }
-  );
+  const { data: comments = [], isLoading: commentsLoading } = useQuery({
+    queryKey: ['comments', task.id],
+    queryFn: () => commentService.getComments(task.id),
+    enabled: isOpen,
+  });
 
   // Update task mutation
-  const updateMutation = useMutation(
-    (data: UpdateTaskData) => taskService.updateTask(task.id, data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['tasks']);
-        toast.success('Task updated successfully');
-        onClose();
-      },
-      onError: (error: any) => {
-        const message = error.response?.data?.error || 'Failed to update task';
-        toast.error(message);
-      },
-    }
-  );
+  const updateMutation = useMutation({
+    mutationFn: (data: UpdateTaskData) => taskService.updateTask(task.id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success('Task updated successfully');
+      onClose();
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.error || 'Failed to update task';
+      toast.error(message);
+    },
+  });
 
   // Create comment mutation
-  const createCommentMutation = useMutation(
-    (data: CreateCommentData) => commentService.createComment(task.id, data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['comments', task.id]);
-        queryClient.invalidateQueries(['tasks']);
-        toast.success('Comment added successfully');
-        resetComment();
-        setShowAddComment(false);
-      },
-      onError: (error: any) => {
-        const message = error.response?.data?.error || 'Failed to add comment';
-        toast.error(message);
-      },
-    }
-  );
+  const createCommentMutation = useMutation({
+    mutationFn: (data: CreateCommentData) => commentService.createComment(task.id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments', task.id] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success('Comment added successfully');
+      resetComment();
+      setShowAddComment(false);
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.error || 'Failed to add comment';
+      toast.error(message);
+    },
+  });
 
   // Delete comment mutation
-  const deleteCommentMutation = useMutation(commentService.deleteComment, {
+  const deleteCommentMutation = useMutation({
+    mutationFn: commentService.deleteComment,
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments', task.id]);
-      queryClient.invalidateQueries(['tasks']);
+      queryClient.invalidateQueries({ queryKey: ['comments', task.id] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('Comment deleted successfully');
     },
     onError: (error: any) => {
@@ -294,10 +294,10 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ isOpen, onClose, task }) 
                     <button
                       type="button"
                       className="btn btn-primary btn-sm"
-                      disabled={createCommentMutation.isLoading}
+                      disabled={createCommentMutation.isPending}
                       onClick={handleCommentSubmit(onCommentSubmit)}
                     >
-                      {createCommentMutation.isLoading ? 'Adding...' : 'Add Comment'}
+                      {createCommentMutation.isPending ? 'Adding...' : 'Add Comment'}
                     </button>
                   </div>
                 </div>
@@ -353,9 +353,9 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ isOpen, onClose, task }) 
             <button 
               type="submit" 
               className="btn btn-primary"
-              disabled={updateMutation.isLoading}
+              disabled={updateMutation.isPending}
             >
-              {updateMutation.isLoading ? 'Updating...' : 'Update Task'}
+              {updateMutation.isPending ? 'Updating...' : 'Update Task'}
             </button>
           </div>
         </form>

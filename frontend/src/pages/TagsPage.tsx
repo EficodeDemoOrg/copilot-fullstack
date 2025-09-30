@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tagService } from '../services/api';
 import { Tag } from '../types';
 import { Plus, Trash2 } from 'lucide-react';
@@ -10,11 +10,15 @@ const TagsPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: tags = [], isLoading } = useQuery(['tags'], tagService.getTags);
+  const { data: tags = [], isLoading } = useQuery({
+    queryKey: ['tags'],
+    queryFn: tagService.getTags,
+  });
 
-  const deleteMutation = useMutation(tagService.deleteTag, {
+  const deleteMutation = useMutation({
+    mutationFn: tagService.deleteTag,
     onSuccess: () => {
-      queryClient.invalidateQueries(['tags']);
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
       toast.success('Tag deleted successfully');
     },
     onError: (error: any) => {
@@ -68,7 +72,7 @@ const TagsPage: React.FC = () => {
                 <button
                   className="btn btn-danger btn-sm"
                   onClick={() => handleDeleteTag(tag.id, tag.name)}
-                  disabled={deleteMutation.isLoading}
+                  disabled={deleteMutation.isPending}
                   title="Delete tag"
                 >
                   <Trash2 size={14} />
@@ -76,7 +80,7 @@ const TagsPage: React.FC = () => {
               </div>
               <div className="tag-details">
                 <p className="text-sm text-muted">
-                  Created: {new Date(tag.created_at).toLocaleDateString()}
+                  Created: {new Date(tag.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
