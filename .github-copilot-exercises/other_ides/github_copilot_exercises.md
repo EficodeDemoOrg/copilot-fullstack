@@ -21,7 +21,7 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
 
 **Learning Goal:** Use chat participant to get familiar with the project structure, setup, and workflow before starting development.
 
-### Exercise 1.2: First Steps with Code Suggestions
+### Exercise 1.2: First Steps with Code Suggestions and Inline chat
 
 1. **Explore Auto-Suggestions**
    - Open `backend/src/types/index.ts`
@@ -38,6 +38,12 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
 3. **Experiment with Function Names**
    - Start typing `export const formatCreatedDate` and see what Copilot suggests
    - Try `export const isTaskComplete` and observe the different suggestion
+
+4. **Quick Edits with Inline Chat**
+   - With `backend/src/types/index.ts` still open, select any method
+   - The shortcut to open inline chat for GitHub Copilot in JetBrains IDEs is Alt+Enter. This brings up the Copilot chat or inline suggestions when your cursor is on a line of code.
+   - Try: "Add a docstring comment to this method"
+   - Notice how inline chat allows quick edits without leaving your code
 
 **Learning Goal:** Understand how Copilot uses context and comments to generate relevant code suggestions.
 
@@ -91,13 +97,20 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
    - Type: `@project Create a simple TypeScript utility class for date formatting`
    - Notice how Agent mode creates complete new implementations
 
+4. **Plan Agent - Strategic Planning**
+   - Select **Plan** mode
+   - Use for breaking down complex features into actionable steps
+   - Try creating a plan to add a new feature like "task prioritization"
+   - Ask: `@project Create a development plan for adding task prioritization`
+   - Plan helps you think through implementation before coding
+
 **Learning Goal:** Understand when and how to use different Copilot interaction modes.
 
 ### Exercise 1.6: Setting Up Project Context with Copilot Instructions
 
 **Why This Matters:** Creating a `copilot-instructions.md` file helps Copilot understand your project's specific patterns, conventions, and architecture, leading to more accurate and relevant suggestions throughout your development session.
 
-1. **Generate Instructions Using VS Code**
+1. **Generate Instructions**
    - Create the `.github` folder if it doesn't exist
    - Open Copilot Chat in Agent mode
    - Add your project's README.md and main configuration files as context
@@ -127,7 +140,7 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
      - Common debugging approaches
      - Testing strategies used in the project
 
-**Learning Goal:** Understand how to leverage VS Code's instruction generation feature to provide Copilot with better project context, resulting in more accurate and relevant code suggestions.
+**Learning Goal:** Understand how to leverage instruction generation feature to provide Copilot with better project context, resulting in more accurate and relevant code suggestions.
 
 ---
 
@@ -201,30 +214,69 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
 
 ---
 
-## Phase 3: Chat Variables and Context Control
+## Phase 3: Context Control
 
 > **💡 Context Setup Guide**  
 > 
-> **Using #file**: Start typing `#` and begin typing the filename you want to add as context.
+> **Using #file**: Start typing `#` and begin typing the filename you want to add as context. It will show you a dropdown of available files to choose from.
 > 
+> **Using #get_errors**: Type `#get_errors` to identify any compile or lint errors in the current file.
+> 
+> **Using #get_terminal_output**: Type `#get_terminal_output` to include the visible output from your terminal window.
+> 
+> **Drag and Drop**: You can also drag files directly from the Explorer view into the chat window to add them as context.
+> 
+> **Using + Add Files/Context**: In Edit or Agent mode, click the `+ Add Files` or `+ Add Context` button to select files or folders.
+> 
+> **For Code Selections**: Select code in the editor, then either drag it into chat or use inline chat (`Ctrl+I` or `Cmd+I`) to work with the selection directly.
 
-### Exercise 3.1: File referencing with chat variables
+### Exercise 3.1: Chat Variables and Context Control
 
 1. **File Context Variables**
-   - Select `backend/src/routes/tasks.ts` in Explorer
-   - Ask: `Analyze the code structure in #file`
-   - Try with different files: `What security issues exist in #file?`
+   - Try: `What security issues exist in #file:backend/src/routes/tasks.ts?`
+   - Experiment with multiple files: `Compare #file:backend/src/types/index.ts with #file:frontend/src/types/index.ts`
+   - Note: You can also drag and drop files directly into chat
 
-2. **Selection and Editor Variables**
-   - Select a function in any TypeScript file
+2. **Working with Code Selections**
+   - Select a method in any TypeScript file
    - Open inline chat
-   - Ask: `Optimize this code for better performance`
+   - Ask: "Optimize this code for better performance"
+   - Or select code and drag it into the chat window
+   - Try selecting multiple lines and asking: "Refactor this to improve readability"
+   - Note: Copilot uses selected code directly in inline chat
 
-3. **Multiple file Contexts**
-   - Compare validation approaches in backend/src/routes/tasks.ts vs backend/src/routes/comments.ts
-   - Request: `How does the validation logic in #file differ from #file?`
+3. **Project-wide Analysis**
+   - Ask: `@project What design patterns are used in this codebase?`
+   - Try: `@project How is error handling implemented across the codebase?`
+   - Request: `@project Show me the data flow through the application`
 
-**Learning Goal:** Master chat variables for precise context control and analysis.
+4. **Error Context Variables**
+   - Use `#get_errors` to reference all errors in your file
+   - Ask: `#get_errors What are the most critical errors I should fix first?`
+   - Try: `#get_errors Explain these TypeScript errors and suggest fixes`
+   - Request: `#get_errors How can I resolve these type checking issues?`
+   - This automatically includes error messages from your IDE's Problems panel
+
+5. **Terminal Output Variables**
+   - Use `#get_terminal_output` to reference the output from your terminal
+   - Run a command in the terminal, then ask: `#get_terminal_output What does this output mean?`
+   - Try: `#get_terminal_output Debug this error message`
+   - Request: `#get_terminal_output Based on this test output, what's failing?`
+   - This captures the visible terminal content for analysis
+
+6. **Folder Context (Agent Mode)**
+   - Switch to Agent mode
+   - Click `+ Add Context` and select a folder
+   - Ask: "Analyze the code quality in this folder"
+   - You can add multiple folders to provide broader context
+
+7. **Advanced Context Combinations**
+   - Try: `@project What would be the impact of adding caching to #file:backend/src/routes/tasks.ts?`
+   - Experiment: Add both `#file:backend/src/routes/tasks.ts` and `#file:backend/src/routes/comments.ts`, then ask "How do these files interact?"
+   - Combine project and file context: `@project Based on existing patterns in #file:backend/src/routes/tasks.ts, suggest improvements`
+   - Mix error and file context: `#get_errors #file:backend/src/routes/tasks.ts Are these errors related to this file?`
+
+**Learning Goal:** Master Copilot-specific context mechanisms for precise analysis and code generation.
 
 ---
 
@@ -270,7 +322,12 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
    - Ask: `What could cause the task creation to fail silently in this React Query setup?`
    - Request: `How should I debug PostgreSQL connection issues in this Node.js application?`
 
-2. **Error Handling Improvements**
+2. **Debugging Terminal Output**
+   - After running a failing command, ask: `#get_terminal_output Why did this command fail?`
+   - Try: `#get_terminal_output How do I fix this based on our project setup?`
+   - Request: `#get_terminal_output What does this error stack trace tell us?`
+
+3. **Error Handling Improvements**
    - Ask: `How can I improve error handling throughout this TypeScript application?`
    - Request: `Show me best practices for logging in Express.js applications`
 
@@ -307,9 +364,32 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
 
 **Learning Goal:** Understand how different expert perspectives can improve your code.
 
+### Exercise 6.3: Code Review Workflow
+
+1.  **Setting Up for Code Review**
+
+    - Open the file you want to review
+    - Open Copilot Chat and select **Ask** mode
+    - Ask: `Act as a code reviewer and analyze this file for quality, performance, and best practices`
+
+2.  **Conducting the Review**
+
+    - Select specific methods or sections in the editor
+    - Ask: `Review this code for potential bugs, security issues, and maintainability`
+    - Request: `Suggest refactoring opportunities and improvements following project conventions`
+    - Ask for specific feedback: `Are there any design pattern violations or anti-patterns here?`
+
+3.  **Implementing Feedback**
+    - Switch to **Edit** mode in Copilot Chat
+    - Paste the review findings: `Based on this code review feedback, apply the recommended improvements`
+    - Ask: `Generate updated code that addresses these review comments`
+    - Review the changes and accept them into your workflow
+
+**Learning Goal:** Develop a structured code review process using Copilot to catch issues and improve code quality before committing.
+
 ---
 
-## Phase 7: Advanced Context Optimization
+## Phase 7: Advanced Context Optimization and Copilot Techniques
 
 ### Exercise 7.1: Strategic Context Building
 
@@ -347,54 +427,163 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
 
 1. **Scenario: Adding Task Priority Feature - A Multi-Model Workflow**
    
-   **Step 1: Analysis with oX**
-   - Switch to oX model and ask: `Looking at the current task management structure in this project, what would be the architectural implications of adding task priorities? What potential issues should I consider?`
-   - Follow up with: `Based on the existing TaskController and Task model, what's the most logical way to integrate priority without breaking current functionality?`
+   **Step 1: Analysis with a Reasoning Model**
+   - Click the **model picker** in the Chat view and select a reasoning-focused model (e.g., o1, o3-mini, or similar)
+   - Ask: `Looking at the current task management structure in this project, what would be the architectural implications of adding task priorities? What potential issues should I consider?`
+   - Follow up with: `Based on the existing Task model and routes, what's the most logical way to integrate priority without breaking current functionality?`
 
-   **Step 2: Implementation with Sonnet 4**
-   - Switch to Sonnet 4 and say: `Based on the analysis above, generate the TypeScript interface changes needed to add a priority field to the Task interface. Include validation with Joi.`
+   **Step 2: Implementation with a Code Generation Model**
+   - Switch to a code-optimized model (e.g., Claude Sonnet, GPT-4o, or similar)
+   - Say: `Based on the analysis above, generate the TypeScript interface changes needed to add a priority field to the Task interface. Include validation.`
    - Then: `Now generate the corresponding Express route changes to handle priority in task creation and updates.`
    
-   **Step 3: Documentation and Git Summary with GPT-4.1/5-mini**
-   - Switch to GPT-4.1/5-mini and request: `Get the current git status and create a summary of what files would be changed for this priority feature.`
+   **Step 3: Documentation with a Fast Model**
+   - Switch to a faster model for quick tasks (e.g., GPT-4o-mini, Claude Haiku, or similar)
+   - Request: `Get the current git status and create a summary of what files would be changed for this priority feature.`
    - Follow with: `Generate a concise commit message and brief documentation for these priority changes.`
 
-   **Step 4: Validation Back to oX**
-   - Return to oX and ask: `Review the generated code changes. Are there any logical flaws or edge cases I should address before implementing?`
+   **Step 4: Validation with a Reasoning Model**
+   - Return to the reasoning model and ask: `Review the generated code changes. Are there any logical flaws or edge cases I should address before implementing?`
 
-2. **Reflect on the Multi-Model Experience**
+2. **Exploring Available Models**
+   - Click the model picker to see all available models for your subscription
+   - Note: Available models vary based on your Copilot subscription and may change over time
+
+3. **Reflect on the Multi-Model Experience**
    - Compare how each model approached their specialized task
-   - Note the differences in reasoning depth, code quality, and task execution efficiency
+   - Note the differences in reasoning depth, code quality, and response speed
    - Consider how this workflow could be applied to other feature development scenarios
 
 **Learning Goal:** Master a practical multi-model workflow that leverages each LLM's strengths for analysis, implementation, and project management tasks.
 
 ---
 
-## Phase 8: Advanced Prompt Engineering
+## Phase 8: Advanced Prompt Engineering and Agent Workflows
 
-### Exercise 8.1: Prompt Strategies
+### Exercise 8.1: Understanding Custom Agents
 
-### Exercise 8.3: Reusable Prompts
+You can create **custom agents** (`.agent.md` files) that define specialized personas with specific tools, instructions, and behaviors. This repository includes two custom agents in `.github/agents/`.
 
-1. **Session Summaries example**
-    - Explore the `.github/prompts/` folder and, for each prompt, read its guide to understand its intended workflow and protocol.
-       - Try session summaries, use `summarize-session.prompt.md` and follow its format for capturing key outcomes and next steps.
-    - Practice saving and reusing these prompts, always adhering to their review, approval, and output formatting requirements.
+1. **Explore the Custom Agents in This Repository**
+   - Open `.github/agents/Implementer.agent.md` and review its structure:
+     - **description**: Brief summary of the agent's purpose
+     - **tools**: List of tools the agent can use (edit, search, runCommands, etc.)
+     - **Instructions**: Detailed behavioral guidelines in the body
+   - Open `.github/agents/Lead Developer.agent.md` and compare the differences
 
-2. **Thread Dump Example: Critical Context Handoff**
-   - Open `.github/prompts/thread-dump.prompt.md` and review its protocol for context handoff.
-   - Simulate a scenario where your chat context is at maximum capacity and you need to hand off work to a new agent instance.
-   - Use the prompt to generate a final briefing message that includes:
-     - Primary objective of the session
-     - Mission log (completed steps, current status)
-     - Essential assets (files, data, URLs)
-     - Immediate directives (next actions)
-     - Constraints & pitfalls (instructions, limitations)
-   - Practice formatting your output as a single, precise text message (not a file or code block), following the template in the prompt.
-   - Discuss how this protocol ensures seamless continuation of work and why it is important for collaborative or multi-agent workflows.
+2. **Using Custom Agents**
+   - Open the Copilot Chat panel
+   - Click the **agent picker** dropdown (look for the agent/mode selector)
+   - Your custom agents appear alongside the built-in modes (Chat, Edit, Agent)
+   - Select **Implementer** to activate that persona
 
-**Learning Goal:** Develop and apply reusable prompt patterns for common tasks, leveraging provided prompt files for consistency and efficiency.
+3. **Practice with the Implementer Agent**
+   - With Implementer selected, notice it follows a strict execution protocol:
+     - Reads task specifications precisely
+     - Creates TODO lists before implementing
+     - Focuses only on code changes, not planning
+   - Try: "Add a method to calculate task completion percentage to the Task interface"
+   - Observe how it follows its defined execution phases
+
+4. **Practice with the Lead Developer Agent**
+   - Switch to **Lead Developer**
+   - This agent focuses on planning and research, never writing production code
+   - Try: "Analyze the architecture for adding real-time notifications"
+   - Notice how it decomposes the problem into tasks rather than implementing directly
+
+5. **Creating Your Own Custom Agent (Optional)**
+   - Create a new `.agent.md` file in `.github/agents/`
+   - Define the agent's description, allowed tools, and behavioral instructions
+   - Consider creating agents for: code review, documentation, testing, or security analysis
+
+**Learning Goal:** Understand how custom agents extend Copilot's capabilities with specialized personas and workflows.
+
+### Exercise 8.2: Role-Based Collaboration with Custom Agents
+
+1. **Simulate a Lead Developer / Implementer Workflow**
+   
+   This exercise demonstrates how custom agents can work together like a real development team:
+   
+   **Step 1: Planning with Lead Developer**
+   - Select **Lead Developer** agent
+   - Ask: "Create a plan for adding task priority levels (high, medium, low) to this application"
+   - The Lead Developer will:
+     - Analyze the existing codebase
+     - Identify files that need changes
+     - Break down the work into discrete tasks
+   - Review the generated plan
+
+   **Step 2: Implementation with Implementer**
+   - Switch to **Implementer** agent
+   - Reference the plan: "Implement the first task from the priority feature plan"
+   - The Implementer will:
+     - Follow the task specification precisely
+     - Create a TODO list of changes
+     - Execute the code modifications
+   - Review and approve the changes
+
+   **Step 3: Iterate**
+   - Return to Lead Developer for the next task assignment
+   - Switch back to Implementer to execute
+   - Continue until the feature is complete
+
+2. **Understanding Agent Boundaries**
+   - Notice how Lead Developer refuses to write production code
+   - Notice how Implementer focuses only on execution, not architecture decisions
+   - This separation prevents scope creep and maintains quality
+
+**Learning Goal:** Master role-based collaboration using custom agents that mirror real team dynamics.
+
+### Exercise 8.3: Reusable Prompt Files
+
+GitHub Copilot supports **prompt files** (`.prompt.md`) that define reusable prompt templates you can invoke with `/` commands. This repository includes several prompts in `.github/prompts/`.
+
+1. **Explore the Available Prompt Files**
+   - Open `.github/prompts/` folder
+   - Review the available prompts:
+     - `implement.prompt.md` - For executing implementation tasks
+     - `lead-plan.prompt.md` - For creating implementation plans
+     - `ask_advice.prompt.md` - For getting guidance and recommendations
+     - `summarize-session.prompt.md` - For capturing session outcomes
+     - `thread-dump.prompt.md` - For context handoffs
+
+2. **Using Prompt Files**
+   - In Copilot Chat, type `/` to see available prompt commands
+   - Your custom prompts appear alongside built-in commands like `/explain`, `/fix`, `/tests`
+   - Select a prompt to insert its template into the chat
+
+3. **Practice with Implementation Prompts**
+   - Use `/implement` when working with the Implementer agent
+   - Use `/lead-plan` when working with the Lead Developer agent
+   - Notice how prompts and agents work together for structured workflows
+
+4. **Creating Your Own Prompt Files (Optional)**
+   - Create a new file in `.github/prompts/` with `.prompt.md` extension
+   - Define reusable templates for common tasks in your workflow
+   - Consider creating prompts for: code reviews, documentation, testing scenarios
+   - Restart the IDE or reload the window to see your new prompts in the `/` command list
+
+**Learning Goal:** Leverage reusable prompt files to standardize common workflows and ensure consistency across your team.
+
+### Exercise 8.4: Effective Context Management
+
+1. **Context Window Awareness**
+   - Be aware that each chat thread has a limited context window
+   - When a conversation gets long, create a summary before starting a new thread
+   - Use the thread dump prompt to prepare handoffs
+
+2. **Creating Handoff Documents**
+   - Before closing a complex thread, ask: "Summarize our discussion and decisions in a format I can use to continue in a new thread"
+   - Save these summaries in your project docs folder
+   - Reference these documents when starting related work
+
+3. **Thread Hygiene**
+   - Name your threads descriptively (if your IDE supports it)
+   - Close threads when their purpose is complete
+   - Don't mix different concerns in the same thread
+   - Start fresh threads for new features or major refactoring
+
+**Learning Goal:** Master the art of managing multiple focused chat threads effectively.
 
 ---
 
@@ -425,33 +614,89 @@ Welcome to your comprehensive GitHub Copilot training journey! These exercises a
 
 **Learning Goal:** Understand different implementation strategies and trade-offs.
 
-### Exercise 9.3: Multi-Thread Task Management with Role-Based Agents
+### Exercise 9.3: Multi-Thread Task Management with Custom Agents
 
-1. **Scenario: Implementing User Authentication - Collaborative Development**
+This exercise demonstrates how to use multiple chat threads with different custom agents to organize complex development workflows. In JetBrains, each thread is isolated with its own context and agent selection, allowing you to separate concerns like planning, implementation, and review. While you can't view threads side-by-side like in VS Code, you can effectively switch between threads and share context through files.
 
-> **Tips:** You can find old chat histories in the Copilot tool window by pressing the clock icon.
-   
-   **Setup: Create Two Separate Chat Threads**
-   - Open two separate Copilot chat windows/threads for this exercise
-   
-   **Thread 1: Lead Developer Role**
-   - In the first chat, establish the role: `Act as a Lead Developer. You are responsible for architectural decisions, code reviews, and ensuring best practices.`
+1. **Opening Multiple Chat Threads**
+
+   - Open the Copilot Chat tool window from the right sidebar
+   - Click the **"+"** button to create a new chat thread
+   - Each thread maintains its own conversation history and agent selection
+   - You can switch between threads using the thread selector/tabs
+
+2. **Scenario: Implementing User Authentication - Organized Workflow**
+
+   **Thread 1: Lead Developer (Planning)**
+
+   - Create a new chat thread 
+   - In the agent picker, select **Lead Developer**
+   - Or use **Plan** mode if Lead Developer agent isn't available
+   - Add project context: `@project`
    - Ask: `I need to add user authentication to this task manager. What's the overall architecture and implementation strategy you recommend?`
    - Follow up: `Create a detailed implementation plan with security considerations and database schema changes.`
+   - The Lead Developer will analyze the codebase and provide a strategic plan
+   - **Save the plan**: Ask the agent to `Create a PLANNING.md file with this authentication plan`
 
-   **Thread 2: Tester/Implementer Role**
-   - Open a new chat window for the second thread
-   - In the second chat, establish the role: `Act as a Tester/Implementer. You focus on writing TypeScript code, creating tests, and ensuring implementation quality.`
-   - Share the plan from Thread 1 and ask: `Based on this authentication plan, implement the User interface and JWT authentication middleware for Express.js.`
+   **Thread 2: Implementer (Execution)**
+
+   - Create another new chat thread
+   - Switch to **Agent** mode or select **Implementer** custom agent
+   - Drag and drop `PLANNING.md` into the chat window for context
+   - Ask: `Based on this authentication plan, implement the User model and basic login functionality.`
+   - The Implementer agent will create TODO lists and execute the code changes
+   - Use `/implement` prompt if available
    - Request: `Generate comprehensive Jest unit tests for the authentication system.`
 
-2. **Cross-Thread Collaboration**
-   - Take the implementation from Thread 2 back to Thread 1 (Lead Developer) for code review
-   - Ask the Lead Developer: `Review this authentication implementation. What improvements or security concerns do you see?`
-   - Bring the feedback back to Thread 2 (Tester/Implementer) to refine the code
-   - Continue this back-and-forth until both roles approve the solution
+3. **Cross-Thread Collaboration Workflow**
 
-**Learning Goal:** Master collaborative development using multiple chat threads with distinct roles, simulating real-world team dynamics and leveraging specialized agents for comprehensive project management.
+   **Step 1: Planning → Implementation**
+
+   - In Lead Developer thread, get the complete plan
+   - **Option A**: Ask agent to create `docs/AUTH_PLAN.md` file
+   - **Option B**: Copy the plan text manually
+   - Switch to Implementer thread
+   - Add the plan file as context: `#file:docs/AUTH_PLAN.md` or drag-and-drop
+   - Implementer executes based on the plan
+
+   **Step 2: Implementation → Review**
+
+   - After Implementer makes changes, note the modified files
+   - Switch back to Lead Developer thread
+   - Add the implemented files as context: `#file:backend/src/types/index.ts #file:backend/src/routes/auth.ts`
+   - Or drag-and-drop the files into the chat
+   - Ask: `Review this authentication implementation. What improvements or security concerns do you see?`
+   - Ask the agent to create a `docs/AUTH_REVIEW.md` file with the feedback
+
+   **Step 3: Refinement Loop**
+
+   - Switch back to Implementer thread
+   - Add review context: `#file:docs/AUTH_REVIEW.md`
+   - Ask: `Address the review feedback and refine the code`
+   - Continue iterating between threads until both agents approve
+
+4. **Alternative: Single Thread with Role Switching**
+
+   If managing multiple threads becomes complex, you can use a single thread and explicitly switch roles:
+   
+   - Create one thread: **"User Authentication Feature"**
+   - **Planning phase**: `Acting as Lead Developer, create an implementation plan for user authentication`
+   - **Save the plan**: Ask to create `docs/AUTH_PLAN.md`
+   - **Implementation phase**: `Now acting as Implementer, based on #file:docs/AUTH_PLAN.md, implement the User model`
+   - **Review phase**: `Back to Lead Developer role, review #file:backend/src/types/index.ts for security issues`
+
+5. **Tips for Multi-Thread Workflows in JetBrains**
+   
+   - **Use files for handoffs**: Create .md files to share context between threads
+   - **Leverage drag-and-drop**: Quickly add files to any thread by dragging from the Project view
+   - **Use #file: syntax**: Reference specific files when switching threads
+   - **Leverage prompt files**: Use `/lead-plan` in Lead Developer thread, `/implement` in Implementer thread (if created in Exercise 8.3)
+   - **Name threads descriptively**: Use clear names like "Feature X - Planning" vs "Feature X - Implementation"
+   - **One task at a time**: Complete planning fully before switching to implementation thread
+   - **Document decisions**: Keep running notes in docs/ folder for cross-thread reference
+   - **Use @project sparingly**: Only use when you need full codebase context, as it can slow responses
+
+**Learning Goal:** Master multi-thread organization techniques using custom agents to separate planning, implementation, and review concerns, creating a structured development workflow that mirrors professional team collaboration, adapted for JetBrains' thread management system.
 
 ---
 

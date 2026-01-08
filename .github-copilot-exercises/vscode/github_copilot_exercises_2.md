@@ -12,7 +12,7 @@ Different agents work best with different AI models
 - **Deep reasoning and debugging**: Gemini 2.5 Pro
 
 **Always verify before running a prompt:**
-1. Check the chatmode selector shows the correct agent
+1. Check the agent picker shows the correct agent
 2. Check the model selector shows your preferred model for that agent
 3. Manually switch back if needed
 
@@ -45,26 +45,50 @@ You've been tasked with adding a complete user management system to the TypeScri
 
 **Deliverable:** Create a `REQUIREMENT-ANALYSIS.md` file documenting all findings, challenges, and recommendations.
 
-#### Part 1.2: Lead Developer Planning Agent
+#### Part 1.2: Strategic Planning with Plan Agent
 
-1. **Initial Implementation Plan Creation**
+1. **Create High-Level Implementation Strategy**
    - Start a fresh Copilot Chat session
-   - In the chat interface, locate the mode dropdown
-   - Switch **"Lead Developer"** mode
-   - drag `requirement-analysis.md` file as a context and use the reusable prompt by: `/lead-plan`
+   - Select **Plan** from the agent picker
+   - Attach the `REQUIREMENT-ANALYSIS.md` file as context
+   - Request: `Create a strategic plan for implementing user management in this TypeScript/React application. Break down the work into logical phases and identify dependencies.`
+
+   **The Plan agent will:**
+   - Analyze the requirements and create a high-level implementation strategy
+   - Identify major phases of work (e.g., database setup, authentication, authorization, UI)
+   - Suggest the order of implementation
+   - Highlight potential risks and dependencies
+
+2. **Review and Refine the Strategy**
+   - Review the strategic plan provided by the Plan agent
+   - Ask follow-up questions to clarify any ambiguous areas
+   - Request: `What are the critical milestones for this implementation?`
+   - Ask: `What would be a good MVP (Minimum Viable Product) for this feature?`
+
+**Deliverable:** Document the strategic plan in `docs/epic_user_management/STRATEGIC_PLAN.md`
+
+#### Part 1.3: Detailed Task Planning with Lead Developer Agent
+
+1. **Convert Strategy into Executable Tasks**
+   - Start a fresh Copilot Chat session
+   - In the chat interface, locate the agent picker dropdown
+   - Select **"Lead Developer"** custom agent from the picker
+   - Attach both `REQUIREMENT-ANALYSIS.md` and `STRATEGIC_PLAN.md` as context
+   - Use the reusable prompt: `/lead-plan`
 
    **The Lead Developer will:**
-   - Create an implementation plan
+   - Convert the strategic plan into detailed, actionable tasks
    - Generate numbered task files (01_task_name.md, 02_task_name.md, etc.)
-   - Document decisions in a decision log
+   - Document technical decisions in a decision log
    - Create a task manifest
 
    **Task numbering:** Tasks are numbered sequentially (01, 02, 03...) to enforce execution order. Each task is designed to be completed without blocking on others.
 
-   **Your responsibility:**
+2. **Review the Detailed Plan**
    - Read each task file to ensure it makes sense
    - Verify tasks are small enough (each should be completable in one session)
-   - Check that file paths reference the correct project structure (backend/src/, frontend/src/, database/)
+   - Check that file paths use project root (backend/src/, frontend/src/, database/) not placeholders
+   - Ensure tasks align with the strategic plan from Part 1.2
 
    **Deliverable:**
    - Output files in `docs/epic_[name]/`:
@@ -73,12 +97,26 @@ You've been tasked with adding a complete user management system to the TypeScri
    - `tasks/01_[name].md`, `tasks/02_[name].md`, etc.
    - `MANIFEST.md`
 
+#### Part 1.4: Experimenting with Custom Planning Prompts (Optional)
+
+Instead of using the structured prompt file, you can experiment with generating the plan using your own custom prompts. This is a great way to practice prompt engineering and compare outputs.
+
+1. **Start a new chat session** with your preferred model (e.g., Claude Sonnet 4, GPT-4)
+2. **Provide Context**: Add `#file:REQUIREMENT-ANALYSIS.md`
+3. **Craft Your Own Prompt**: Try variations like:
+ > "Based on the attached requirements analysis, create a detailed implementation plan for adding user authentication to this TypeScript/React/Node.js task manager application. Break it into 5-7 numbered, sequential task files. Each task should focus on a specific component (database migrations, backend routes, services, React components, etc.). Use Node.js 18+, TypeScript, Express.js, PostgreSQL, and React Query best practices. Generate a MANIFEST.md listing all files you create."
+
+4. **Compare Results**: 
+   - How does your custom prompt compare to the structured prompt?
+   - Which produces clearer task definitions?
+   - What prompt patterns work best for planning?
+
 ### Phase 2: Collaborative Implementation Workflow
 
 #### Part 2.1: Implement the Tasks
 
 1. Start a **new chat session**
-2. Select the **Implementer** chatmode
+2. Select the **Implementer** agent from the agent picker
 3. **Set model to Claude Sonnet 4 or 4.5** (best for precise code generation)
 4. Drag the first task file as a context: `docs/epic_[name]/tasks/01_[task_name].md`
 5. Run: `/implement`
@@ -99,11 +137,11 @@ Once approved, the Implementer will:
 - Execute tests if applicable
 - Report completion status
 
-#### Step 2.2: Handle Implementation Issues
+#### Part 2.2: Handle Implementation Issues
 
 **If the task succeeds:**
 - Review the code changes
-- Move to the next task (repeat Step 6 with `02_[task_name].md`)
+- Move to the next task (repeat Part 2.1 with `02_[task_name].md`)
 
 **If verification fails:**
 - Read the Implementer's explanation
@@ -122,17 +160,30 @@ You can:
 - Modify the task specification
 - Abort and go back to Lead Developer for task revision
 
-#### Step 2.3: Complete Remaining Tasks
+#### Part 2.3: Complete Remaining Tasks
 
-Repeat Step 6 for each task file in sequence (02, 03, etc.) until all tasks in the epic are complete.
+Repeat Part 2.1 for each task file in sequence (02, 03, etc.) until all tasks in the epic are complete.
 
 **Important:** Each task should be run in a fresh Implementer session with just that task file as context.
 
-#### Part 2.4: Complete the Epic
+#### Part 2.4: Experimenting with Custom Implementation Prompts
+
+Want to try a different implementation approach? Create your own prompt!
+
+1. **Start a new chat session**
+2. **Add task context**: `#file:docs/epic_user_authentication/tasks/01_[task_name].md`
+3. **Craft your prompt**: Try variations like:
+   > "Act as a senior TypeScript developer. Implement the attached task using Node.js 18+, Express.js, PostgreSQL, React 19, and TypeScript best practices. List all files you'll modify, explain your approach, and then implement it step by step. Follow the existing patterns for API routes, React Query usage, and form handling. Test your implementation."
+
+4. **Apply changes**: Copy code blocks and apply them to your workspace
+
+This hands-on approach helps you understand how to guide an agent through complex tasks.
+
+#### Part 2.5: Complete the Epic
 
 After the last task succeeds:
 
-1. Stay in **Implementer** mode or start new session
+1. Stay in **Implementer** agent or start new session
 2. Attach:
    - `docs/epic_[name]/plans/IMPLEMENTATION_PLAN.md`
    - `docs/epic_[name]/MANIFEST.md`
@@ -151,10 +202,31 @@ The user management system from Exercise 1 is feature-complete, but it hasn't be
 
 ### Phase 1: Test Strategy and Planning
 
-#### Part 1.1: Test Analysis with a QA Agent
+#### Part 1.0: Create a Custom QA Agent
+
+Before beginning test analysis, create a specialized QA agent to focus on testing concerns.
+
+1.  **Create the QA Agent File**
+    *   In your project, create the directory `.github/agents/` if it doesn't exist
+    *   Create a new file: `.github/agents/QA Specialist.agent.md`
+
+2.  **Define the QA Agent**
+    *   Define the Agent as required. Refer to the existing custom agents for structure.
+    *   Focus the agent on TypeScript/Node.js testing with Jest, React Testing Library, and security testing
+
+3.  **Verify Agent Availability**
+    *   Open Copilot Chat
+    *   Click the agent picker dropdown
+    *   Verify **"QA Specialist"** appears in the list of available agents
+
+**Deliverable:** Custom QA Specialist agent ready to use for test analysis.
+
+#### Part 1.1: Test Analysis with QA Specialist Agent
 
 1.  **Analyze the Feature Implementation**
-    *   Open a new Copilot Chat session.
+    *   Open a new Copilot Chat session
+    *   Select **"QA Specialist"** from the agent picker
+    *   Provide context by attaching relevant implementation files or using `@workspace #codebase`
     *   Ask: `@workspace #codebase Based on the recently added user management system, what are the critical code paths that require testing?`
     *   Follow up: `Generate a list of test cases covering unit, integration, and end-to-end scenarios for user registration, login, and profile management.`
     *   Request: `What are the primary security vulnerabilities (like SQL injection, XSS, or JWT token issues) we should test for in the authentication flow?`
@@ -163,33 +235,75 @@ The user management system from Exercise 1 is feature-complete, but it hasn't be
     *   Ask: `Given the TypeScript/Node.js backend and React frontend structure, what testing frameworks would you recommend (e.g., Jest for backend, React Testing Library for frontend)?`
     *   Request: `Outline the steps and code needed to set up the recommended testing frameworks in this fullstack TypeScript project.`
 
-**Deliverable:** Create a `TEST-ANALYSIS.md` file documenting the test cases, security concerns, and setup plan.
+3.  **Edge Cases and Test Data**
+    *   Ask: `What edge cases should I test for in the user authentication flow?`
+    *   Request: `Generate sample test data covering normal cases, boundary conditions, and error scenarios.`
 
-#### Part 1.2: Manual Plan Generation using Agent mode
+**Deliverable:** Create a `TEST-ANALYSIS.md` file documenting all test cases, security concerns, recommended frameworks, and setup plan.
 
-Instead of using the structured **"Lead Developer"** chatmode, you can experiment with generating the plan manually. This is a great way to understand how to craft effective prompts and compare the outputs of different models.
+#### Part 1.2: Test Strategy with Plan Agent
 
-1.  **Start a new chat session** with your preferred agent model (e.g., Claude Sonnet, GPT-4).
-2.  **Provide Context**: Drag the `TEST-ANALYSIS.md` file into the chat.
+1.  **Create High-Level Test Strategy**
+    *   Start a fresh Copilot Chat session
+    *   Select **Plan** from the agent picker
+    *   Attach the `TEST-ANALYSIS.md` file as context
+    *   Request: `Create a strategic test plan for the user authentication system. Organize tests by priority (critical, high, medium) and type (unit, integration, e2e). Identify dependencies between test suites.`
+
+2.  **Review and Prioritize**
+    *   Review the test strategy provided by the Plan agent
+    *   Identify which tests are essential for MVP vs. nice-to-have
+    *   Request: `What tests are absolutely critical before deploying to production?`
+
+**Deliverable:** Document the test strategy in `docs/epic_user_auth_testing/TEST_STRATEGY.md`
+
+#### Part 1.3: Manual Plan Generation (Alternative Approach)
+
+As an alternative to using structured agents, you can experiment with generating the plan manually using the built-in Agent mode. This is a great way to understand how to craft effective prompts and compare the outputs of different models.
+
+1.  **Start a new chat session** and select **Agent** from the agent picker
+2.  **Provide Context**: Drag both `TEST-ANALYSIS.md` files into the chat
 3.  **Prompt the Agent**: Use a custom prompt to generate the plan. For example:
-    > "Based on the attached `TEST-ANALYSIS.md`, create a detailed, step-by-step implementation plan for the "user_auth_testing" epic. Focus on TypeScript/Node.js backend testing with Jest and React frontend testing with React Testing Library. Break the work into small, numbered, sequential task files. For each task, define a clear goal and acceptance criteria. Also generate a MANIFEST.md file listing all the files you will create."
+    > "Based on the attached test analysis and strategy, create a detailed, step-by-step implementation plan for the "user_auth_testing" epic. Focus on TypeScript/Node.js backend testing with Jest and React frontend testing with React Testing Library. Break the work into small, numbered, sequential task files. For each task, define a clear goal and acceptance criteria. Also generate a MANIFEST.md file listing all the files you will create."
 4.  **Create Files Manually**: Based on the agent's output, create the directory structure (`docs/epic_user_auth_testing/`) and the corresponding plan, task, and manifest files yourself.
 
 This approach gives you more fine-grained control and is an excellent exercise in prompt engineering.
 
-#### Part 1.3: (Optional) Test Plan Generation with Lead Developer Agent
+**Deliverable:** Document the test strategy in `docs/epic_user_auth_testing/TEST_STRATEGY.md`
+
+#### Part 1.4: (Recommended) Detailed Test Plan with QA Specialist Agent
 
 1.  **Create the Test Implementation Plan**
-    *   Start a new Copilot Chat session in **"Lead Developer"** mode.
-    *   Provide the `TEST-ANALYSIS.md` file as context.
-    *   Use the prompt: `/lead-plan Create a detailed, step-by-step test implementation plan based on the provided analysis. The epic name is "user_auth_testing".`
+    *   Start a new Copilot Chat session and select **"QA Specialist"** from the agent picker
+    *   Provide both `TEST-ANALYSIS.md` and `TEST_STRATEGY.md` files as context
+    *   Use the prompt: `/lead-plan Create a detailed, step-by-step test implementation plan based on the provided analysis and strategy. The epic name is "user_auth_testing".`
+    
+    **Note:** The `/lead-plan` prompt works with any custom agent. The QA Specialist will use its testing expertise to create test-focused tasks.
 
 2.  **Review the Generated Plan**
-    *   The agent will create a new epic in `docs/epic_user_auth_testing/` containing:
-        *   `plans/IMPLEMENTATION_PLAN.md`: The overall strategy.
-        *   `tasks/01_[name].md`, `tasks/02_[name].md`, etc.: Sequenced tasks like setting up Jest for backend, writing unit tests for user types/interfaces, writing integration tests for authentication routes, setting up React Testing Library, writing component tests, etc.
-        *   `MANIFEST.md`: A manifest of all generated files.
-    *   Verify that the tasks are logical, sequential, and appropriately sized.
+    *   The QA Specialist agent will create a new epic in `docs/epic_user_auth_testing/` containing:
+        *   `plans/IMPLEMENTATION_PLAN.md`: The overall test implementation strategy
+        *   `plans/DECISION_LOG.md`: Testing framework and approach decisions
+        *   `tasks/01_[name].md`, `tasks/02_[name].md`, etc.: Sequenced tasks like:
+            - Setting up the testing framework and configuration
+            - Writing unit tests for User types/interfaces
+            - Writing integration tests for authentication routes
+            - Creating security-focused test cases (SQL injection, XSS, etc.)
+            - Implementing edge case tests
+        *   `MANIFEST.md`: A manifest of all generated files
+    *   Verify that the tasks are logical, sequential, and appropriately sized
+    *   Confirm that all security concerns and edge cases from earlier analysis are covered
+
+#### Part 1.5: Experimenting with Custom Test Planning (Optional)
+
+Try creating the test plan with your own prompt:
+
+1. **Start a new chat session**
+2. **Add context**: `#file:docs/TEST-ANALYSIS.md`
+3. **Custom prompt example**:
+   > "Based on the attached task, generate the necessary Jest test code for TypeScript/Node.js/React. Use proper test structure, follow AAA pattern (Arrange-Act-Assert), use React Testing Library for component tests, Supertest for API tests, and include proper TypeScript types. List all files you'll create or modify before implementing."
+
+4. **Create files manually** based on the output
+5. **Compare** with the structured prompt approach
 
 
 ### Phase 2: Test Implementation and Debugging
@@ -241,9 +355,9 @@ This is the core of the QA workflow.
 ## Tips for Success
 
 - **One agent, one task, one chat session** - Don't mix contexts
-- **Double-check chatmode and model** - Every time you switch threads, verify they're correct
+- **Double-check agent and model** - Every time you switch threads, verify the agent picker and model picker show the correct selections
 - **Use Claude Sonnet 4/4.5 for implementation** - It's superior for code generation and detailed planning
-- **Use `/thread_dump` when stuck** - If agent loses context or becomes confused, dump and restart fresh
+- **Start fresh when stuck** - If an agent loses context or becomes confused, start a new chat session with clear context
 - **Read everything** - The agents generate detailed documentation for a reason
 - **Commit frequently** - After each successful task or epic
 - **Trust but verify** - Agents follow patterns but can make mistakes
